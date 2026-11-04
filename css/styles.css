@@ -1,0 +1,238 @@
+/* MOSHMIS Shared Styles */
+
+.school-photo-background {
+  background-image: linear-gradient(rgba(9, 42, 73, 0.12), rgba(9, 42, 73, 0.2)), url("../logo/background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Smooth transitions */
+.fade-in { animation: fadeIn 0.3s ease-in-out; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.announcement-slide-active { animation: announcementSlideIn 0.45s ease-out; }
+@keyframes announcementSlideIn {
+  from { opacity: 0; transform: translateX(1rem); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Print styles for report cards */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 6mm 6mm;
+  }
+  body * { visibility: hidden; }
+  .print-area, .print-area * { visibility: visible; }
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .no-print { display: none !important; }
+  .report-card {
+    page-break-after: always;
+    page-break-inside: avoid;
+    box-shadow: none !important;
+    border: 1.5px solid #0369a1 !important;
+    /* Force exact A4 page fit */
+    width: 198mm !important;
+    max-width: 198mm !important;
+    min-height: 285mm !important;
+    padding: 10mm 11mm !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    font-size: 11pt !important;
+    overflow: hidden !important;
+  }
+
+  .report-card table { font-size: 10pt !important; }
+  .report-card table th,
+  .report-card table td { font-size: 10pt !important; padding: 5px 6px !important; }
+  .report-card table tfoot { font-size: 10.5pt !important; }
+  .report-card [style*="font-size:7pt"],
+  .report-card [style*="font-size:7.5pt"],
+  .report-card [style*="font-size:8pt"],
+  .report-card [style*="font-size:8.5pt"],
+  .report-card [style*="font-size:8.8pt"],
+  .report-card [style*="font-size:9pt"] { font-size: 10pt !important; }
+  .report-card > div:first-child { min-height: 95px; }
+
+  body.printing-mark-list #sidebar,
+  body.printing-mark-list header,
+  body.printing-mark-list #modalContainer,
+  body.printing-mark-list #toastContainer { display: none !important; }
+  body.printing-mark-list main { display: block !important; }
+  body.printing-mark-list #contentArea,
+  body.printing-mark-list #contentArea * { visibility: visible; }
+  body.printing-mark-list #contentArea {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0;
+    overflow: visible;
+    background: #fff;
+  }
+  body.printing-mark-list #contentArea > div { display: block !important; }
+  body.printing-mark-list #compiledMarkListContainer { border: 0 !important; }
+  body.printing-mark-list #compiledMarkListContainer > div:first-child { display: none !important; }
+  body.printing-mark-list table { font-size: 9pt; }
+  body.printing-mark-list th,
+  body.printing-mark-list td { padding: 5px !important; }
+
+  body.printing-marks-entry #sidebar,
+  body.printing-marks-entry header,
+  body.printing-marks-entry #modalContainer,
+  body.printing-marks-entry #toastContainer { display: none !important; }
+  body.printing-marks-entry main { display: block !important; }
+  body.printing-marks-entry #contentArea,
+  body.printing-marks-entry #contentArea * { visibility: visible; }
+  body.printing-marks-entry #contentArea {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0;
+    overflow: visible;
+    background: #fff;
+  }
+  body.printing-marks-entry .marks-entry-actions { display: none !important; }
+  body.printing-marks-entry #marksEntryTable input {
+    border: 0 !important;
+    outline: 0 !important;
+    width: 42px !important;
+    text-align: center;
+  }
+  body.printing-marks-entry #marksEntryTable { font-size: 8pt; }
+  body.printing-marks-entry #marksEntryTable th,
+  body.printing-marks-entry #marksEntryTable td { padding: 4px !important; }
+
+  .audit-print-area { color: #111827; }
+  .audit-print-details { display: block !important; }
+  .audit-print-area .overflow-x-auto { overflow: visible !important; }
+  .audit-print-area .audit-log-table { font-size: 9pt; }
+  .audit-print-area .audit-log-table th,
+  .audit-print-area .audit-log-table td { padding: 6px 8px !important; border: 1px solid #d1d5db; }
+  .payments-print-area { color: #111827; box-shadow: none !important; }
+  .payments-print-heading { display: block !important; }
+  .payments-print-area .payments-history-table { font-size: 7pt; }
+  .payments-print-area .payments-history-table th,
+  .payments-print-area .payments-history-table td { padding: 3px 4px !important; border: 1px solid #d1d5db; }
+
+  body.printing-system-report #sidebar,
+  body.printing-system-report header,
+  body.printing-system-report #modalContainer,
+  body.printing-system-report #toastContainer { display: none !important; }
+  body.printing-system-report main { display: block !important; }
+  body.printing-system-report #contentArea,
+  body.printing-system-report #contentArea * { visibility: visible; }
+  body.printing-system-report #contentArea {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    padding: 0;
+    overflow: visible;
+    background: #fff;
+  }
+  body.printing-system-report .system-report-print-area {
+    position: static !important;
+    width: 100% !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    color: #111827;
+  }
+  body.printing-system-report .system-report-table { font-size: 8pt; }
+  body.printing-system-report .system-report-table th,
+  body.printing-system-report .system-report-table td {
+    padding: 4px 5px !important;
+    border: 1px solid #9ca3af !important;
+    overflow-wrap: anywhere;
+  }
+  body.printing-system-report .system-report-print-area tr { page-break-inside: avoid; }
+}
+
+/* Active nav link */
+.nav-active {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+/* Improved button interactions */
+.nav-button {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-button:hover:not(.nav-active) {
+  background-color: rgba(148, 163, 184, 0.1);
+  transform: translateX(4px);
+}
+
+.nav-button:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px #0ea5e9;
+}
+
+.nav-button:active {
+  transform: scale(0.98);
+}
+
+.nav-button.nav-active:hover {
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Content area smooth transitions */
+#contentArea {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .nav-button {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .nav-button i {
+    min-width: 1.25rem;
+  }
+}
+
+/* Touch device optimization */
+@media (hover: none) and (pointer: coarse) {
+  .nav-button {
+    padding: 1rem;
+    min-height: 44px;
+  }
+  
+  .nav-button:active {
+    background-color: rgba(148, 163, 184, 0.2);
+    transform: scale(0.95);
+  }
+}

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register School - KIMS IT SOLUTIONS</title>
+  <script src="js/tailwind-cdn.js"></script>
+  <link rel="stylesheet" href="css/fontawesome.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-600 via-sky-700 to-indigo-800 p-4 py-10">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden fade-in">
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-sky-600 to-indigo-600 p-6 text-white text-center">
+      <div class="flex items-center justify-center gap-3 mb-1">
+        <img src="logo/logo.jpg" alt="KIMS IT SOLUTIONS" class="w-11 h-11 rounded-lg object-cover">
+        <h1 class="text-2xl font-bold">KIMS IT SOLUTIONS</h1>
+      </div>
+      <p class="text-sky-100 text-sm">Register Your School</p>
+    </div>
+
+    <div class="p-8">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-xl font-semibold text-slate-700">School Registration</h2>
+          <p class="text-sm text-slate-500">No existing KIMS account is required. Register your school and use the username and password you choose to sign in.</p>
+        </div>
+        <a href="login.html" class="inline-flex items-center gap-2 text-slate-400 hover:text-slate-600 text-sm">
+          <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden="true">
+            <path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Back to Login</span>
+        </a>
+      </div>
+
+      <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-6">
+
+        <!-- ===== SCHOOL LOGO ===== -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">
+            School Logo / Badge <span class="text-red-500">*</span>
+          </label>
+          <div class="flex items-center gap-5">
+            <div id="logoPreviewWrap" class="w-20 h-20 rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center bg-slate-50 overflow-hidden shrink-0">
+              <svg id="logoPlaceholder" viewBox="0 0 24 24" fill="none" class="w-8 h-8 text-slate-300" aria-hidden="true">
+                <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M7 16l3-3 2 2 3-4 2 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <img id="logoPreviewImg" class="w-full h-full object-cover hidden" alt="Logo preview">
+            </div>
+            <div class="flex-1">
+              <label for="logoFile" class="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-lg font-medium text-sm transition-colors">
+                <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden="true">
+                  <path d="M12 16V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M5 16v1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <span>Upload Logo / Badge</span>
+              </label>
+              <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp" class="hidden" onchange="previewLogo(this)">
+              <p class="text-xs text-slate-400 mt-1.5">PNG, JPG, or WebP up to 2 MB. This appears on your panel and report cards.</p>
+              <p id="logoError" class="text-xs text-red-500 mt-1 hidden">Please upload a school logo.</p>
+              <!-- hidden field to carry data URL -->
+              <input type="hidden" name="_logoDataUrl" id="logoDataUrlField">
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SCHOOL INFO ===== -->
+        <div>
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">School Information</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <label class="block text-sm font-medium text-slate-700 mb-1">School Name <span class="text-red-500">*</span></label>
+              <input type="text" name="schoolName" required placeholder="e.g. Green Hill Primary School"
+                class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">District <span class="text-red-500">*</span></label>
+              <input type="text" name="district" required placeholder="e.g. Kampala"
+                class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Telephone</label>
+              <input type="tel" name="tel" placeholder="e.g. 0414-123456"
+                class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+              <input type="email" name="email" placeholder="e.g. info@school.ac.ug"
+                class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Head Teacher Name <span class="text-red-500">*</span></label>
+              <input type="text" name="headTeacher" required placeholder="e.g. Mrs. Sarah Nakabugo"
+                class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-sm font-medium text-slate-700 mb-1">Postal / Physical Address</label>
+              <input type="text" name="address" placeholder="e.g. P.O. Box 1234, Kampala"
+                class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-sm font-medium text-slate-700 mb-1">School Motto</label>
+              <input type="text" name="motto" placeholder="e.g. Strive for Excellence"
+                class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== LOGIN CREDENTIALS ===== -->
+        <div>
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Login Credentials</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Username <span class="text-red-500">*</span></label>
+              <input type="text" name="regUsername" required placeholder="Choose a username"
+                class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500"
+                autocomplete="off">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Password <span class="text-red-500">*</span></label>
+              <div class="relative">
+                <input type="password" name="regPassword" id="regPassword" required minlength="10" placeholder="At least 10 characters"
+                  class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 pr-10"
+                  autocomplete="new-password">
+                <button type="button" onclick="togglePwd('regPassword','eyeReg1')" class="absolute right-2 top-2.5 text-slate-400 hover:text-slate-600" aria-label="Show password">
+                  <svg id="eyeReg1" viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden="true">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" stroke="currentColor" stroke-width="1.6"/>
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Confirm Password <span class="text-red-500">*</span></label>
+              <div class="relative">
+                <input type="password" name="regConfirm" id="regConfirm" required placeholder="Repeat password"
+                  class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 pr-10"
+                  autocomplete="new-password">
+                <button type="button" onclick="togglePwd('regConfirm','eyeReg2')" class="absolute right-2 top-2.5 text-slate-400 hover:text-slate-600" aria-label="Show password">
+                  <svg id="eyeReg2" viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden="true">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" stroke="currentColor" stroke-width="1.6"/>
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+            <p class="text-xs text-slate-400 mt-2 inline-flex items-center gap-1">
+            <svg viewBox="0 0 24 24" fill="none" class="w-3.5 h-3.5" aria-hidden="true">
+              <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M12 8v5m0 3h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            <span>Keep these credentials safe. They are used each time you log in to KIMS IT SOLUTIONS.</span>
+          </p>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button type="submit" id="submitBtn"
+            class="inline-flex items-center justify-center gap-2 flex-1 px-4 py-3 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-semibold transition-colors">
+            <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden="true">
+              <path d="M5 5.5A1.5 1.5 0 0 1 6.5 4h11A1.5 1.5 0 0 1 19 5.5v3A1.5 1.5 0 0 1 17.5 10h-11A1.5 1.5 0 0 1 5 8.5v-3Z" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M7 14h10M7 18h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            <span>Register School</span>
+          </button>
+          <a href="login.html"
+            class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium text-center transition-colors">
+            Cancel
+          </a>
+        </div>
+
+        <!-- ===== SUBSCRIPTION / PAYMENT (optional) ===== -->
+        <div class="pt-4 border-t border-slate-100">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Subscription (Optional)</h3>
+          <div class="flex items-center gap-4">
+            <label class="inline-flex items-center gap-2">
+              <input type="checkbox" id="subscribeNow" name="subscribeNow" class="w-4 h-4">
+              <span class="text-sm text-slate-600">Subscribe and pay now</span>
+            </label>
+            <div id="subscribeAmountWrap" class="hidden">
+              <label class="sr-only" for="subAmount">Amount (UGX)</label>
+              <input type="number" id="subAmount" name="subAmount" min="0" placeholder="Amount (UGX)"
+                class="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 text-sm">
+            </div>
+          </div>
+          <p class="text-xs text-slate-400 mt-2">If you choose to subscribe now, a payment record will be created and visible in the admin panel.</p>
+        </div>
+        <!-- ===== PAYMENT METHOD ===== -->
+        <div class="pt-4">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Preferred Transfer Method</h3>
+          <div class="flex items-center gap-4">
+            <select id="paymentMethod" name="paymentMethod" class="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 text-sm">
+              <option value="none">None</option>
+              <option value="mobile">Mobile Money (Phone)</option>
+              <option value="bank">Bank Transfer (Account)</option>
+            </select>
+            <input type="tel" id="paymentPhone" name="paymentPhone" placeholder="Mobile Money number"
+              class="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 text-sm hidden">
+            <input type="text" id="paymentAccount" name="paymentAccount" placeholder="Bank account number"
+              class="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 text-sm hidden">
+          </div>
+          <p class="text-xs text-slate-400 mt-2">Provide a phone number or bank account so payments can be sent to the school.</p>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="toastContainer"></div>
+
+<script src="js/app.js"></script>
+<script>
+  function previewLogo(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('Logo file is too large. Max 2 MB.', 'error');
+      input.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const dataUrl = e.target.result;
+      document.getElementById('logoDataUrlField').value = dataUrl;
+      document.getElementById('logoPreviewImg').src = dataUrl;
+      document.getElementById('logoPreviewImg').classList.remove('hidden');
+      document.getElementById('logoPlaceholder').classList.add('hidden');
+      document.getElementById('logoError').classList.add('hidden');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function togglePwd(fieldId, iconId) {
+    const field = document.getElementById(fieldId);
+    const icon  = document.getElementById(iconId);
+    if (field.type === 'password') {
+      field.type = 'text';
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+      field.type = 'password';
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+  }
+
+  // Intercept submit to validate logo and payment details before calling handleRegister
+  document.getElementById('registerForm').addEventListener('submit', function(e) {
+    const logo = document.getElementById('logoDataUrlField').value;
+    if (!logo) {
+      e.preventDefault();
+      document.getElementById('logoError').classList.remove('hidden');
+      document.getElementById('logoPreviewWrap').classList.add('border-red-400');
+      showToast('Please upload a school logo before registering.', 'error');
+      return;
+    }
+
+    // Validate payment method details if provided
+    const pm = document.getElementById('paymentMethod')?.value || 'none';
+    if (pm === 'mobile') {
+      const phone = document.getElementById('paymentPhone')?.value.trim();
+      if (!phone) { e.preventDefault(); showToast('Please provide a mobile payment number.', 'error'); return; }
+    }
+    if (pm === 'bank') {
+      const acc = document.getElementById('paymentAccount')?.value.trim();
+      if (!acc) { e.preventDefault(); showToast('Please provide a bank account number.', 'error'); return; }
+    }
+
+    // handleRegister is bound via onsubmit — let it proceed
+  });
+
+  // Show/hide amount input when subscribe checkbox toggles
+  document.getElementById('subscribeNow')?.addEventListener('change', function(e) {
+    const wrap = document.getElementById('subscribeAmountWrap');
+    if (!wrap) return;
+    wrap.classList.toggle('hidden', !e.target.checked);
+  });
+
+  // Payment method toggle
+  const pm = document.getElementById('paymentMethod');
+  pm?.addEventListener('change', function(e) {
+    const v = e.target.value;
+    document.getElementById('paymentPhone').classList.toggle('hidden', v !== 'mobile');
+    document.getElementById('paymentAccount').classList.toggle('hidden', v !== 'bank');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: kims_smis
+      POSTGRES_USER: kims_migrator
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      KIMS_APP_PASSWORD: ${KIMS_APP_PASSWORD:?Set KIMS_APP_PASSWORD in .env}
+    ports:
+      - "5432:5432"
+    volumes:
+      - kims-postgres-data:/var/lib/postgresql/data
+      - ./backend/init-runtime-role.sh:/docker-entrypoint-initdb.d/10-create-runtime-role.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kims_app -d kims_smis"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  kims-postgres-data:
