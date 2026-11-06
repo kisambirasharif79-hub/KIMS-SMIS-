@@ -1,5 +1,8 @@
-
+require('dotenv').config();
 const mysql = require('mysql2/promise');
+
+const fs = require('node:fs');
+const path = require('node:path');
 
 const dbName = process.env.DB_NAME || 'KIMS_db';
 
@@ -9,7 +12,12 @@ const pool = mysql.createPool({
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
   database: dbName,
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : undefined,
+ ssl: process.env.DB_SSL === 'true'
+  ? {
+      ca: fs.readFileSync(path.join(__dirname, '..', 'ca.pem')),
+      rejectUnauthorized: true
+    }
+  : undefined,
   waitForConnections: true,
   connectionLimit: Number(process.env.DB_POOL_SIZE || 10),
   queueLimit: 0,
