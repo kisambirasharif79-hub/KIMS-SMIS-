@@ -30,21 +30,35 @@ function sendError(res, status, message) {
   return res.status(status).json({ error: message });
 }
 
+
 function requireSameOrigin(req, res, next) {
   const origin = req.get('origin');
+
   if (!origin) return next();
+
   let originUrl;
+
   try {
     originUrl = new URL(origin);
   } catch {
     return sendError(res, 403, 'Request origin is not allowed.');
   }
-  if (originUrl.host !== req.get('host') ||
-      (cookieSecure && originUrl.protocol !== 'https:')) {
+
+  const allowedOrigins = new Set([
+    'https://comforting-stardust-b64499.netlify.app',
+    'https://kims-smis-backend.onrender.com'
+  ]);
+
+  if (
+    originUrl.protocol !== 'https:' ||
+    !allowedOrigins.has(originUrl.origin)
+  ) {
     return sendError(res, 403, 'Request origin is not allowed.');
   }
+
   return next();
 }
+
 
 app.use('/api', requireSameOrigin);
 app.use('/api', (req, res, next) => {
