@@ -1,4 +1,4 @@
-require('dotenv').config();
+
 
 const crypto = require('node:crypto');
 const path = require('node:path');
@@ -25,6 +25,26 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000
 });
+const PORT = Number(process.env.PORT || 3000);
+const SESSION_TTL_MS = 60 * 60 * 1000;
+const COOKIE_NAME = 'kims_session';
+const cookieSecure = process.env.COOKIE_SECURE === 'true';
+require('dotenv').config();
+
+const crypto = require('node:crypto');
+const path = require('node:path');
+const express = require('express');
+const helmet = require('helmet');
+const { rateLimit } = require('express-rate-limit');
+const bcrypt = require('bcryptjs');
+const pool = require('./database.cjs');
+
+if (process.env.NODE_ENV === 'production' &&
+    (process.env.COOKIE_SECURE !== 'true' || process.env.DB_SSL !== 'true')) {
+  throw new Error('Production requires COOKIE_SECURE=true and DB_SSL=true.');
+}
+
+const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const SESSION_TTL_MS = 60 * 60 * 1000;
 const COOKIE_NAME = 'kims_session';
