@@ -12,12 +12,12 @@
   "engines": {
     "node": ">=20"
   },
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "dotenv": "^16.4.7",
-    "express": "^5.1.0",
-    "express-rate-limit": "^7.5.0",
-    "helmet": "^8.1.0",
-    "pg": "^8.13.1"
-  }
+ "dependencies": {
+  "bcryptjs": "^2.4.3",
+  "dotenv": "^16.4.7",
+  "express": "^5.1.0",
+  "express-rate-limit": "^7.5.0",
+  "helmet": "^8.1.0",
+  "mysql2": "^3.14.0"
+}
 }
