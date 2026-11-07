@@ -1,31 +1,4 @@
 
-const path = require('node:path');
-const express = require('express');
-const helmet = require('helmet');
-const { rateLimit } = require('express-rate-limit');
-const bcrypt = require('bcryptjs');
-const { Pool } = require('pg');
-
-const requiredEnvironment = ['APP_DATABASE_URL'];
-for (const name of requiredEnvironment) {
-  if (!process.env[name]) throw new Error(`Missing required environment variable: ${name}`);
-}
-if (process.env.NODE_ENV === 'production' &&
-    (process.env.COOKIE_SECURE !== 'true' || process.env.DATABASE_SSL !== 'true')) {
-  throw new Error('Production requires COOKIE_SECURE=true and DATABASE_SSL=true.');
-}
-
-const app = express();
-const pool = new Pool({
-  connectionString: process.env.APP_DATABASE_URL,
-  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: true } : undefined,
-  max: Number(process.env.DB_POOL_SIZE || 10),
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000
-});
-const PORT = Number(process.env.PORT || 3000);
-const SESSION_TTL_MS = 60 * 60 * 1000;
-const COOKIE_NAME = 'kims_session';
 
 require('dotenv').config();
 
