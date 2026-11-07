@@ -442,10 +442,13 @@ app.post('/api/auth/login', loginLimiter, async (req, res, next) => {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query(
-        'INSERT INTO user_sessions (user_id, token_hash, expires_at) VALUES ($1, $2, now() + interval \'1 hour\')',
-        [user.id, hashToken(token)]
-      );
+      
+await client.query(
+  `INSERT INTO user_sessions (id, user_id, token_hash, expires_at)
+   VALUES ($1, $2, $3, now() + interval '1 hour')`,
+  [crypto.randomUUID(), user.id, hashToken(token)]
+);
+
       await client.query(
         'DELETE FROM user_sessions WHERE expires_at < now() OR revoked_at < now() - interval \'30 days\''
       );
@@ -595,10 +598,13 @@ app.post('/api/auth/restore-school', authenticate, async (req, res, next) => {
     const schoolAccount = result.rows[0];
     if (!schoolAccount) return sendError(res, 404, 'The school account could not be found.');
     const token = crypto.randomBytes(32).toString('base64url');
-    await pool.query(
-      'INSERT INTO user_sessions (user_id, token_hash, expires_at) VALUES ($1, $2, now() + interval \'1 hour\')',
-      [schoolAccount.id, hashToken(token)]
-    );
+    
+await pool.query(
+  `INSERT INTO user_sessions (id, user_id, token_hash, expires_at)
+   VALUES ($1, $2, $3, now() + interval '1 hour')`,
+  [crypto.randomUUID(), schoolAccount.id, hashToken(token)]
+);
+
     const currentToken = parseCookie(req.get('cookie') || '', COOKIE_NAME);
     await pool.query(
       'UPDATE user_sessions SET revoked_at=now() WHERE token_hash=$1 AND revoked_at IS NULL',
@@ -682,11 +688,11 @@ app.post('/api/schools/admin-setup', authenticate, async (req, res, next) => {
         );
       }
 
-      await client.query(
-        `INSERT INTO user_sessions (user_id, token_hash, expires_at)
-         VALUES ($1, $2, now() + interval '1 hour')`,
-        [updated.rows[0].id, hashToken(token)]
-      );
+     await client.query(
+  `INSERT INTO user_sessions (id, user_id, token_hash, expires_at)
+   VALUES ($1, $2, $3, now() + interval '1 hour')`,
+  [crypto.randomUUID(), updated.rows[0].id, hashToken(token)]
+);
       const currentToken = parseCookie(req.get('cookie') || '', COOKIE_NAME);
       if (currentToken) {
         await client.query(
