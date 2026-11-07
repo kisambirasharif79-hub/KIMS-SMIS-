@@ -82,9 +82,18 @@ function hashToken(token) {
 
 async function createAuditLog(client, req, userId, schoolId, action, targetType = '', targetId = null) {
   await client.query(
-    `INSERT INTO audit_logs (actor_user_id, school_id, action, target_type, target_id, ip_address, user_agent)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-    [userId || null, schoolId || null, action, targetType, targetId, req.ip, req.get('user-agent') || '']
+    `INSERT INTO audit_logs (id, actor_user_id, school_id, action, target_type, target_id, ip_address, user_agent)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+    [
+      crypto.randomUUID(),
+      userId || null,
+      schoolId || null,
+      action,
+      targetType,
+      targetId,
+      req.ip,
+      req.get('user-agent') || ''
+    ]
   );
 }
 
