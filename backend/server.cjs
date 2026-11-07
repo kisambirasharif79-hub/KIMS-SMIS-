@@ -16,6 +16,7 @@ if (process.env.NODE_ENV === 'production' &&
 }
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = Number(process.env.PORT || 3000);
 const SESSION_TTL_MS = 60 * 60 * 1000;
 const COOKIE_NAME = 'kims_session';
