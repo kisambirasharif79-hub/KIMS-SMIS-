@@ -1,6 +1,4 @@
 
-
-const crypto = require('node:crypto');
 const path = require('node:path');
 const express = require('express');
 const helmet = require('helmet');
@@ -28,7 +26,7 @@ const pool = new Pool({
 const PORT = Number(process.env.PORT || 3000);
 const SESSION_TTL_MS = 60 * 60 * 1000;
 const COOKIE_NAME = 'kims_session';
-const cookieSecure = process.env.COOKIE_SECURE === 'true';
+
 require('dotenv').config();
 
 const crypto = require('node:crypto');
