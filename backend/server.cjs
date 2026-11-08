@@ -297,11 +297,15 @@ app.post('/api/auth/register', registrationLimiter, async (req, res, next) => {
       ['subject_teacher', 'Subject teacher'],
       ['class_teacher', 'Class teacher']
     ]) {
-      const roleResult = await client.query(
-        'INSERT INTO roles (school_id, name, description, is_system_default) VALUES ($1, $2, $3, true) RETURNING id',
-        [school.id, roleName, description]
-      );
-      roleIds[roleName] = roleResult.rows[0].id;
+     const roleId = crypto.randomUUID();
+
+await client.query(
+  `INSERT INTO roles (id, school_id, name, description, is_system_default)
+   VALUES ($1, $2, $3, $4, true)`,
+  [roleId, school.id, roleName, description]
+);
+
+roleIds[roleName] = roleId;
     }
     const rolePermissionMap = {
       school_admin: [
