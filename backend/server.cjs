@@ -323,18 +323,33 @@ roleIds[roleName] = roleId;
         [roleIds[roleName], permissionIds]
       );
     }
-    const userResult = await client.query(
-      `INSERT INTO users (school_id, full_name, username, email, password_hash, account_type)
-       VALUES ($1, $2, $3, $4, $5, 'school_account')
-       RETURNING id, school_id, account_type, full_name`,
-      [
-        school.id,
-        String(body.headTeacher || schoolName).trim(),
-        username,
-        String(body.email || '').trim().toLowerCase(),
-        passwordHash
-      ]
-    );
+    const userId = crypto.randomUUID();
+const fullName = String(body.headTeacher || schoolName).trim();
+const email = String(body.email || '').trim().toLowerCase();
+
+await client.query(
+  `INSERT INTO users (
+    id, school_id, full_name, username, email, password_hash, account_type
+  )
+   VALUES ($1, $2, $3, $4, $5, $6, 'school_account')`,
+  [
+    userId,
+    school.id,
+    fullName,
+    username,
+    email,
+    passwordHash
+  ]
+);
+
+const userResult = {
+  rows: [{
+    id: userId,
+    school_id: school.id,
+    account_type: 'school_account',
+    full_name: fullName
+  }]
+};
     for (const roleName of ['school_admin', 'subject_teacher', 'class_teacher']) {
       const generatedUsername = `${username.slice(0, 58)}-${roleName.replace('_', '-')}-${crypto.randomBytes(3).toString('hex')}`;
       await client.query(
