@@ -166,18 +166,16 @@ function requireOwner(req, res, next) {
 async function withTenantContext(req, callback) {
   const client = await pool.connect();
   try {
-    await client.query('BEGIN');
-    await client.query(
-      `SELECT set_config('app.school_id', $1, true),
-              set_config('app.is_system_owner', $2, true)`,
-      [req.user.school_id || '', String(req.user.account_type === 'system_owner')]
-    );
-    const result = await callback(client);
-    await client.query('COMMIT');
-    return result;
-  } catch (error) {
-    await client.query('ROLLBACK');
-    throw error;
+  await client.query('BEGIN');
+
+  const result = await callback(client);
+
+  await client.query('COMMIT');
+  return result;
+} catch (error) {
+  await client.query('ROLLBACK');
+  throw error;
+}
   } finally {
     client.release();
   }
@@ -265,10 +263,6 @@ app.post('/api/auth/register', registrationLimiter, async (req, res, next) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    await client.query(
-      `SELECT set_config('app.school_id', '', true),
-              set_config('app.is_system_owner', 'true', true)`
-    );
     const passwordHash = await bcrypt.hash(password, 12);
     const schoolId = crypto.randomUUID();
 
@@ -299,11 +293,6 @@ const schoolResult = await client.query(
   [schoolId]
 );
     const school = schoolResult.rows[0];
-    await client.query(
-      `SELECT set_config('app.school_id', $1, true),
-              set_config('app.is_system_owner', 'false', true)`,
-      [school.id]
-    );
     const roleIds = {};
     for (const [roleName, description] of [
       ['school_admin', 'School administration'],
@@ -433,9 +422,9 @@ const paymentResult = {
       paymentAccount
     };
     await client.query(
-      'INSERT INTO school_records (school_id, data) VALUES ($1, $2::jsonb)',
-      [school.id, JSON.stringify(initialData)]
-    );
+  'INSERT INTO school_records (school_id, data) VALUES ($1, $2)',
+  [school.id, JSON.stringify(initialData)]
+);
     await createAuditLog(client, req, userResult.rows[0].id, school.id, 'school_registered', 'school', school.id);
 
     await client.query('COMMIT');
@@ -1184,11 +1173,14 @@ app.put('/api/schools/:id', authenticate, async (req, res, next) => {
           );
         }
       }
-      await client.query(
-        `INSERT INTO school_records (school_id, data, updated_at) VALUES ($1, $2::jsonb, now())
-         ON CONFLICT (school_id) DO UPDATE SET data=EXCLUDED.data, updated_at=now()`,
-        [schoolId, JSON.stringify(data)]
-      );
+     await client.query(
+  `INSERT INTO school_records (school_id, data, updated_at)
+   VALUES ($1, $2, NOW())
+   ON DUPLICATE KEY UPDATE
+   data = VALUES(data),
+   updated_at = NOW()`,
+  [schoolId, JSON.stringify(data)]
+);
       await createAuditLog(client, req, req.user.id, schoolId, 'school_records_updated', 'school', schoolId);
       return profile;
     });
@@ -1205,10 +1197,6 @@ app.delete('/api/schools/:id', authenticate, requireOwner, async (req, res, next
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    await client.query(
-      `SELECT set_config('app.school_id', '', true),
-              set_config('app.is_system_owner', 'true', true)`
-    );
     const school = await client.query('SELECT id, name FROM schools WHERE id=$1', [req.params.id]);
     if (!school.rowCount) {
       await client.query('ROLLBACK');
