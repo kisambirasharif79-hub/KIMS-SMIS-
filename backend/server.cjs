@@ -719,12 +719,19 @@ app.post('/api/schools/admin-setup', authenticate, async (req, res, next) => {
       const passwordHash = await bcrypt.hash(password, 12);
       let updated;
       if (current.rowCount) {
-        updated = await client.query(
-          `UPDATE users SET username=$2, password_hash=$3, status='active', updated_at=now()
-           WHERE id=$1
-           RETURNING id, school_id, account_type, full_name, username`,
-          [current.rows[0].id, username, passwordHash]
-        );
+        await client.query(
+  `UPDATE users
+   SET username=$2, password_hash=$3, status='active', updated_at=NOW()
+   WHERE id=$1`,
+  [current.rows[0].id, username, passwordHash]
+);
+
+updated = await client.query(
+  `SELECT id, school_id, account_type, full_name, username
+   FROM users
+   WHERE id=$1`,
+  [current.rows[0].id]
+);
       } else {
         const role = await client.query(
           `SELECT id FROM roles WHERE school_id=$1 AND name='school_admin' LIMIT 1`,
