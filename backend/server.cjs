@@ -821,9 +821,9 @@ app.get('/api/schools', authenticate, async (req, res, next) => {
                   u.username, u.status AS school_account_status,
                   COALESCE((
                     SELECT jsonb_agg(jsonb_build_object(
-                      'id', cu.id, 'name', cu.full_name, 'username', cu.username,
-                      'role', cu.account_type, 'accountType', cu.account_type, 'status', cu.status
-                    ) ORDER BY cu.account_type)
+  'id', cu.id, 'name', cu.full_name, 'username', cu.username,
+  'role', cu.account_type, 'accountType', cu.account_type, 'status', cu.status
+))
                     FROM users cu WHERE cu.school_id=s.id
                       AND cu.account_type IN ('school_admin', 'subject_teacher', 'class_teacher')
                   ), '[]'::jsonb) AS users
@@ -832,19 +832,19 @@ app.get('/api/schools', authenticate, async (req, res, next) => {
            ORDER BY s.name`
         );
       }
-      return client.query(
-        `SELECT s.id, s.name, s.district, s.address, s.telephone, s.email, s.motto,
-                s.head_teacher, s.logo_data_url, s.account_status, sr.data,
-                u.id AS school_account_id, u.full_name AS school_account_name,
-                u.username, u.status AS school_account_status,
-                COALESCE((
-                  SELECT jsonb_agg(jsonb_build_object(
-                    'id', cu.id, 'name', cu.full_name, 'username', cu.username,
-                    'role', cu.account_type, 'accountType', cu.account_type, 'status', cu.status
-                  ) ORDER BY cu.account_type)
-                  FROM users cu WHERE cu.school_id=s.id
-                    AND cu.account_type IN ('school_admin', 'subject_teacher', 'class_teacher')
-                ), '[]'::jsonb) AS users
+     return client.query(
+  `SELECT s.id, s.name, s.district, s.address, s.telephone, s.email, s.motto,
+          s.head_teacher, s.logo_data_url, s.account_status, sr.data,
+          u.id AS school_account_id, u.full_name AS school_account_name,
+          u.username, u.status AS school_account_status,
+          COALESCE((
+            SELECT jsonb_agg(jsonb_build_object(
+              'id', cu.id, 'name', cu.full_name, 'username', cu.username,
+              'role', cu.account_type, 'accountType', cu.account_type, 'status', cu.status
+            ))
+            FROM users cu WHERE cu.school_id=s.id
+              AND cu.account_type IN ('school_admin', 'subject_teacher', 'class_teacher')
+          ), '[]'::jsonb) AS users
          FROM schools s LEFT JOIN school_records sr ON sr.school_id = s.id
          LEFT JOIN users u ON u.school_id = s.id AND u.id = $2 AND u.account_type = 'school_account'
          WHERE s.id = $1`,
