@@ -1216,11 +1216,12 @@ app.delete('/api/schools/:id', authenticate, requireOwner, async (req, res, next
     }
     await createAuditLog(client, req, req.user.id, req.params.id, 'school_deleted', 'school', req.params.id);
     await client.query(
-      `DELETE FROM support_ticket_replies r
-       USING support_tickets t
-       WHERE r.ticket_id=t.id AND t.school_id=$1`,
-      [req.params.id]
-    );
+  `DELETE r
+   FROM support_ticket_replies AS r
+   INNER JOIN support_tickets AS t ON r.ticket_id = t.id
+   WHERE t.school_id = $1`,
+  [req.params.id]
+);
     await client.query('DELETE FROM support_tickets WHERE school_id=$1', [req.params.id]);
     await client.query('DELETE FROM marks WHERE school_id=$1', [req.params.id]);
     await client.query('DELETE FROM report_cards WHERE school_id=$1', [req.params.id]);
