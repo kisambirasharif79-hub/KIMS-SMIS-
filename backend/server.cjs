@@ -738,12 +738,29 @@ updated = await client.query(
           [schoolId]
         );
         if (!role.rowCount) throw new Error('The school administrator role is not configured.');
-        updated = await client.query(
-          `INSERT INTO users (school_id, role_id, full_name, username, password_hash, account_type, status)
-           VALUES ($1, $2, 'School Administrator', $3, $4, 'school_admin', 'active')
-           RETURNING id, school_id, account_type, full_name, username`,
-          [schoolId, role.rows[0].id, username, passwordHash]
-        );
+        const adminUserId = crypto.randomUUID();
+
+await client.query(
+  `INSERT INTO users (
+    id, school_id, role_id, full_name, username,
+    password_hash, account_type, status
+  )
+   VALUES ($1, $2, $3, 'School Administrator', $4, $5, 'school_admin', 'active')`,
+  [
+    adminUserId,
+    schoolId,
+    role.rows[0].id,
+    username,
+    passwordHash
+  ]
+);
+
+updated = await client.query(
+  `SELECT id, school_id, account_type, full_name, username
+   FROM users
+   WHERE id=$1`,
+  [adminUserId]
+);
       }
 
      await client.query(
@@ -883,14 +900,21 @@ app.put('/api/schools/:schoolId/users/:userId/password', authenticate, async (re
       }
 
       const passwordHash = await bcrypt.hash(newPassword, 12);
-      const updated = await client.query(
-        `UPDATE users SET password_hash=$2,
-         status=CASE WHEN status='suspended' THEN 'active' ELSE status END,
-         updated_at=now()
-         WHERE id=$1
-         RETURNING id, school_id, account_type, full_name, username, status`,
-        [target.rows[0].id, passwordHash]
-      );
+     await client.query(
+  `UPDATE users
+   SET password_hash=$2,
+       status=CASE WHEN status='suspended' THEN 'active' ELSE status END,
+       updated_at=NOW()
+   WHERE id=$1`,
+  [target.rows[0].id, passwordHash]
+);
+
+const updated = await client.query(
+  `SELECT id, school_id, account_type, full_name, username, status
+   FROM users
+   WHERE id=$1`,
+  [target.rows[0].id]
+);
       const token = parseCookie(req.get('cookie') || '', COOKIE_NAME);
       await client.query(
         `UPDATE user_sessions SET revoked_at=now()
@@ -957,15 +981,22 @@ app.put('/api/schools/:schoolId/users/:userId/credentials', authenticate, requir
       }
 
       const passwordHash = await bcrypt.hash(password, 12);
-      const updated = await client.query(
-        `UPDATE users
-         SET username=$2, password_hash=$3,
-             status=CASE WHEN status='suspended' THEN 'active' ELSE status END,
-             updated_at=now()
-         WHERE id=$1
-         RETURNING id, school_id, account_type, full_name, username, status`,
-        [current.rows[0].id, username, passwordHash]
-      );
+      await client.query(
+  `UPDATE users
+   SET username=$2,
+       password_hash=$3,
+       status=CASE WHEN status='suspended' THEN 'active' ELSE status END,
+       updated_at=NOW()
+   WHERE id=$1`,
+  [current.rows[0].id, username, passwordHash]
+);
+
+const updated = await client.query(
+  `SELECT id, school_id, account_type, full_name, username, status
+   FROM users
+   WHERE id=$1`,
+  [current.rows[0].id]
+);
       await client.query(
         'UPDATE user_sessions SET revoked_at=now() WHERE user_id=$1 AND revoked_at IS NULL',
         [current.rows[0].id]
