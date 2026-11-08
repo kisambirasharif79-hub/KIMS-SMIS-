@@ -270,21 +270,34 @@ app.post('/api/auth/register', registrationLimiter, async (req, res, next) => {
               set_config('app.is_system_owner', 'true', true)`
     );
     const passwordHash = await bcrypt.hash(password, 12);
-    const schoolResult = await client.query(
-      `INSERT INTO schools (name, district, address, telephone, email, motto, head_teacher, logo_data_url)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id, name, district, address, telephone, email, motto,
-       head_teacher, logo_data_url, account_status, created_at`,
-      [
-        schoolName,
-        district,
-        String(body.address || '').trim(),
-        String(body.telephone || '').trim(),
-        String(body.email || '').trim().toLowerCase(),
-        String(body.motto || '').trim(),
-        String(body.headTeacher || '').trim(),
-        logo
-      ]
-    );
+    const schoolId = crypto.randomUUID();
+
+await client.query(
+  `INSERT INTO schools (
+    id, name, district, address, telephone, email,
+    motto, head_teacher, logo_data_url
+  )
+   VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+  [
+    schoolId,
+    schoolName,
+    district,
+    String(body.address || '').trim(),
+    String(body.telephone || '').trim(),
+    String(body.email || '').trim().toLowerCase(),
+    String(body.motto || '').trim(),
+    String(body.headTeacher || '').trim(),
+    logo
+  ]
+);
+
+const schoolResult = await client.query(
+  `SELECT id, name, district, address, telephone, email, motto,
+          head_teacher, logo_data_url, account_status, created_at
+   FROM schools
+   WHERE id=$1`,
+  [schoolId]
+);
     const school = schoolResult.rows[0];
     await client.query(
       `SELECT set_config('app.school_id', $1, true),
