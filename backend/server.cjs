@@ -352,20 +352,25 @@ const userResult = {
   }]
 };
     for (const roleName of ['school_admin', 'subject_teacher', 'class_teacher']) {
-      const generatedUsername = `${username.slice(0, 58)}-${roleName.replace('_', '-')}-${crypto.randomBytes(3).toString('hex')}`;
-      await client.query(
-        `INSERT INTO users (school_id, role_id, full_name, username, password_hash, account_type, status)
-         VALUES ($1, $2, $3, $4, $5, $6, 'suspended')`,
-        [
-          school.id,
-          roleIds[roleName],
-          roleName.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase()),
-          generatedUsername,
-          await bcrypt.hash(crypto.randomBytes(32).toString('base64url'), 12),
-          roleName
-        ]
-      );
-    }
+  const generatedUsername = `${username.slice(0, 58)}-${roleName.replace('_', '-')}-${crypto.randomBytes(3).toString('hex')}`;
+
+  await client.query(
+    `INSERT INTO users (
+      id, school_id, role_id, full_name, username,
+      password_hash, account_type, status
+    )
+    VALUES ($1, $2, $3, $4, $5, $6, $7, 'suspended')`,
+    [
+      crypto.randomUUID(),
+      school.id,
+      roleIds[roleName],
+      roleName.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase()),
+      generatedUsername,
+      await bcrypt.hash(crypto.randomBytes(32).toString('base64url'), 12),
+      roleName
+    ]
+  );
+}
 let payments = [];
 
 if (subscribeNow) {
