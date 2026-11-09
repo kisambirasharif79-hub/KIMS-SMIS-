@@ -366,27 +366,27 @@ const userResult = {
         ]
       );
     }
-    let payments = [];
-    if (subscribeNow) {
-      const payment = await client.query(
-        const paymentId = crypto.randomUUID();
-const paymentNote = 'Initial registration subscription';
+ let payments = [];
 
-await client.query(
-  `INSERT INTO payments (
-    id, school_id, amount, payment_category, status,
-    payment_method, note
-  )
-   VALUES ($1, $2, $3, 'subscription', 'pending', $4, $5)`,
-  [
-    paymentId,
-    school.id,
-    subscriptionAmount,
-    paymentMethod,
-    paymentNote
-  ]
-);
+if (subscribeNow) {
+  const paymentId = crypto.randomUUID();
+  const paymentNote = 'Initial registration subscription';
 
+  await client.query(
+    `INSERT INTO payments (
+      id, school_id, amount, payment_category, status,
+      payment_method, note
+    )
+    VALUES ($1, $2, $3, 'subscription', 'pending', $4, $5)`,
+    [
+      paymentId,
+      school.id,
+      subscriptionAmount,
+      paymentMethod,
+      paymentNote
+    ]
+  );
+}
 const paymentResult = {
   rows: [{
     id: paymentId,
