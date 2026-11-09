@@ -366,7 +366,7 @@ const userResult = {
         ]
       );
     }
- let payments = [];
+let payments = [];
 
 if (subscribeNow) {
   const paymentId = crypto.randomUUID();
@@ -386,31 +386,24 @@ if (subscribeNow) {
       paymentNote
     ]
   );
-}
-const paymentResult = {
-  rows: [{
+
+  payments = [{
     id: paymentId,
-    amount: subscriptionAmount,
+    amount: Number(subscriptionAmount),
     status: 'pending',
-    payment_method: paymentMethod,
+    method: paymentMethod,
     note: paymentNote,
-    created_at: new Date()
-  }]
-};
-      );
-      payments = [{
-        id: payment.rows[0].id,
-        amount: Number(payment.rows[0].amount),
-        status: payment.rows[0].status,
-        method: payment.rows[0].payment_method,
-        note: payment.rows[0].note,
-        date: payment.rows[0].created_at,
-        paymentCategory: 'subscription',
-        txRef: '',
-        notified: false,
-        contact: paymentMethod === 'mobile' ? paymentPhone : paymentMethod === 'bank' ? paymentAccount : ''
-      }];
-    }
+    date: new Date(),
+    paymentCategory: 'subscription',
+    txRef: '',
+    notified: false,
+    contact: paymentMethod === 'mobile'
+      ? paymentPhone
+      : paymentMethod === 'bank'
+        ? paymentAccount
+        : ''
+  }];
+}
     const initialData = {
       staff: [],
       students: [],
