@@ -45,9 +45,10 @@ function requireSameOrigin(req, res, next) {
   }
 
   const allowedOrigins = new Set([
-    'https://comforting-stardust-b64499.netlify.app',
-    'https://kims-smis-backend.onrender.com'
-  ]);
+  'https://kims-smis.netlify.app',
+  'https://comforting-stardust-b64499.netlify.app',
+  'https://kims-smis-backend.onrender.com'
+]);
 
   if (
     originUrl.protocol !== 'https:' ||
